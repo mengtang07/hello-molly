@@ -42,17 +42,16 @@ npm run build    # 产物在 dist/
 
 ## 部署到服务器
 
+线上地址：**https://mymolly.online/**（根目录）
+
 ```bash
-# 1. 上传（Mac 终端）
-cd /Users/a1234/Documents/Codex/2026-11-03/https-www-mymolly-online-https-www/outputs
-scp hello-molly-dist.tar.gz deploy-react.sh root@116.62.177.154:/root/
+# 一键（本地）
+bash deploy-now.sh
 
-# 2. 服务器上发布
-ssh root@116.62.177.154
-cd /root && bash deploy-react.sh
-
-# 3. 访问
-#    https://mymolly.online/hello-molly/
+# 分步
+npm run build && tar -czf hello-molly-dist.tar.gz -C dist .
+scp hello-molly-dist.tar.gz deploy-root.sh root@116.62.177.154:/root/
+ssh root@116.62.177.154 'bash /root/deploy-root.sh /var/www/html /root/hello-molly-dist.tar.gz'
 ```
 
 ## 以后更新

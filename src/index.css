@@ -1,38 +1,221 @@
+/* ============================================================
+   Molly — 设计令牌 / 基础样式
+   ============================================================ */
+
 :root {
+  /* 品牌色 */
+  --navy: #0b0645;
+  --navy-2: #1a1160;
+  --navy-3: #2b2180;
+  --lavender: #8b5cf6;
+  --lavender-2: #a855f7;
+  --lavender-soft: #c9a8ff;
+  --lavender-wash: #f5f1ff;
+
+  /* 中性色 */
+  --ink: #17133c;
+  --ink-soft: #3d3763;
+  --muted: #6f6a8c;
+  --line: #ebe7f7;
+  --line-strong: #ddd6f2;
   --bg: #ffffff;
-  --fg: #111827;
-  --muted: #6b7280;
-  --card: #f8fafc;
-  --border: #e5e7eb;
-  --accent: #6366f1;
-  --accent-2: #a855f7;
-  --shadow: 0 1px 3px rgba(0, 0, 0, .05), 0 12px 32px rgba(0, 0, 0, .07);
+  --bg-soft: #fbfaff;
+  --card: #ffffff;
+
+  /* 形状与阴影 */
+  --radius-sm: 12px;
+  --radius-md: 18px;
+  --radius-lg: 26px;
+  --shadow-xs: 0 1px 2px rgba(11, 6, 69, 0.04);
+  --shadow-sm: 0 1px 2px rgba(11, 6, 69, 0.04), 0 8px 24px rgba(11, 6, 69, 0.05);
+  --shadow-md: 0 2px 6px rgba(11, 6, 69, 0.05), 0 20px 48px rgba(11, 6, 69, 0.10);
+  --shadow-lg: 0 30px 70px rgba(11, 6, 69, 0.16);
+
+  /* 布局 */
+  --container: 1140px;
+  --nav-h: 72px;
+
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI Variable Display',
+    'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', system-ui, sans-serif;
 
   color-scheme: light;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC',
-    'Hiragino Sans GB', 'Microsoft YaHei', system-ui, sans-serif;
+  font-family: var(--font-sans);
   line-height: 1.7;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 [data-theme='dark'] {
-  --bg: #0b0f19;
-  --fg: #e5e7eb;
-  --muted: #9ca3af;
-  --card: #131a2a;
-  --border: #1f2937;
-  --accent: #818cf8;
-  --accent-2: #c084fc;
-  --shadow: 0 1px 3px rgba(0, 0, 0, .4), 0 12px 32px rgba(0, 0, 0, .35);
+  --navy: #f4f1ff;
+  --navy-2: #d9d2ff;
+  --navy-3: #b9adff;
+  --lavender: #a78bfa;
+  --lavender-2: #c084fc;
+  --lavender-soft: #ddd0ff;
+  --lavender-wash: #171238;
+
+  --ink: #f1eeff;
+  --ink-soft: #cfc8f0;
+  --muted: #a49dc4;
+  --line: #2a2350;
+  --line-strong: #3a3168;
+  --bg: #0c0827;
+  --bg-soft: #120d31;
+  --card: #151033;
+
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 2px 6px rgba(0, 0, 0, 0.35), 0 20px 48px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 30px 70px rgba(0, 0, 0, 0.55);
+
   color-scheme: dark;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
-body {
-  background: var(--bg);
-  color: var(--fg);
-  transition: background .3s, color .3s;
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--nav-h) + 16px);
+  -webkit-text-size-adjust: 100%;
 }
 
-button { font-family: inherit; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  transition: background 0.35s ease, color 0.35s ease;
+  overflow-x: hidden;
+}
+
+body.nav-open { overflow: hidden; }
+
+img, svg { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; }
+ul { list-style: none; }
+
+::selection { background: var(--lavender); color: #fff; }
+
+:focus-visible {
+  outline: 2px solid var(--lavender);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ---------- 布局容器 ---------- */
+.container {
+  width: 100%;
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: 24px;
+}
+
+.section { padding-block: 104px; }
+
+/* ---------- 滚动进场 ---------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 0.7, 0.28, 1),
+    transform 0.7s cubic-bezier(0.22, 0.7, 0.28, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+.reveal.is-visible { opacity: 1; transform: none; }
+
+/* ---------- 按钮 ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 26px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease,
+    border-color 0.25s ease, color 0.25s ease;
+}
+.btn:hover { transform: translateY(-2px); }
+.btn:active { transform: translateY(0); }
+
+.btn--primary {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-3) 100%);
+  color: #fff;
+  box-shadow: var(--shadow-sm);
+}
+.btn--primary:hover { box-shadow: 0 10px 28px rgba(139, 92, 246, 0.35); }
+[data-theme='dark'] .btn--primary { color: #120c33; }
+
+.btn--ghost {
+  background: transparent;
+  border-color: var(--line-strong);
+  color: var(--ink);
+}
+.btn--ghost:hover { border-color: var(--lavender); color: var(--lavender); }
+
+/* ---------- 区块标题 ---------- */
+.section-heading { max-width: 620px; margin-bottom: 48px; }
+.section-heading--center { margin-inline: auto; text-align: center; }
+
+.section-heading__label {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--lavender);
+  margin-bottom: 14px;
+}
+.section-heading__label::before {
+  content: '✦';
+  margin-right: 8px;
+  font-size: 11px;
+}
+
+.section-heading__title {
+  font-size: clamp(28px, 3.4vw, 40px);
+  line-height: 1.2;
+  font-weight: 750;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+.section-heading__desc {
+  margin-top: 14px;
+  font-size: 16px;
+  color: var(--muted);
+}
+
+/* ---------- 标签 ---------- */
+.tag,
+.project-card__tags li,
+.hero__chips li {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  background: var(--lavender-wash);
+  color: var(--lavender);
+  border: 1px solid transparent;
+}
+
+/* ---------- 滚动进场动画降级 ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  .reveal { opacity: 1; transform: none; }
+}
+
+@media (max-width: 640px) {
+  .section { padding-block: 72px; }
+  .container { padding-inline: 20px; }
+}

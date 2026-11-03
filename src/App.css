@@ -1,0 +1,121 @@
+.page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  position: relative;
+}
+
+.theme {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  font-size: 16px;
+  cursor: pointer;
+  transition: transform .2s, border-color .2s;
+}
+.theme:hover { transform: rotate(-20deg); border-color: var(--accent); }
+
+.card {
+  width: 100%;
+  max-width: 620px;
+  padding: 52px 44px 32px;
+  border-radius: 20px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+
+.eyebrow {
+  font-size: 12px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 14px;
+}
+
+.hello {
+  font-size: clamp(40px, 9vw, 66px);
+  line-height: 1.1;
+  font-weight: 800;
+  letter-spacing: -2px;
+  margin-bottom: 18px;
+}
+.name {
+  background: linear-gradient(120deg, var(--accent), var(--accent-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.sub {
+  color: var(--muted);
+  font-size: 16px;
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.actions {
+  margin-top: 32px;
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn {
+  padding: 11px 24px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: linear-gradient(120deg, var(--accent), var(--accent-2));
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform .2s, opacity .2s;
+}
+.btn:hover { transform: translateY(-2px); }
+.btn strong { margin-left: 4px; }
+
+.btn-ghost {
+  background: transparent;
+  border-color: var(--border);
+  color: var(--muted);
+}
+.btn-ghost:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+.btn-ghost:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+
+.facts {
+  margin: 40px 0 0;
+  padding-top: 26px;
+  border-top: 1px solid var(--border);
+  display: grid;
+  gap: 10px;
+  text-align: left;
+}
+.fact { display: flex; justify-content: space-between; gap: 16px; font-size: 14px; }
+.fact dt { color: var(--muted); margin: 0; }
+.fact dd { margin: 0; font-weight: 600; }
+
+.foot {
+  margin-top: 28px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  font-size: 13px;
+  color: var(--muted);
+}
+.foot a { color: var(--accent); }
+
+@media (max-width: 560px) {
+  .card { padding: 40px 24px 26px; }
+  .fact { flex-direction: column; gap: 2px; }
+}

@@ -1,0 +1,5 @@
+node_modules
+dist
+deploy/hello-molly-dist.tar.gz
+*.local
+.DS_Store

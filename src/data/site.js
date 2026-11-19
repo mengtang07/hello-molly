@@ -10,6 +10,8 @@ export const site = {
 
   nav: [
     { label: 'Home', href: '#home' },
+    // 站外入口：点击在新标签页打开国家队 ETF 流向报表
+    { label: 'aaa', href: 'https://www.mymolly.online/etf/', external: true },
     { label: 'About', href: '#about' },
     { label: 'Projects', href: '#projects' },
     { label: 'Blog', href: '#notes' },

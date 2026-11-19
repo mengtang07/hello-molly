@@ -29,7 +29,13 @@ export default function Navbar({ dark, onToggleTheme }) {
 
         <nav className="navbar__links" aria-label="主导航">
           {site.nav.map((item) => (
-            <a key={item.href} href={item.href} onClick={() => setOpen(false)}>
+            <a
+              key={item.href}
+              href={item.href}
+              target={item.external ? '_blank' : undefined}
+              rel={item.external ? 'noreferrer' : undefined}
+              onClick={() => setOpen(false)}
+            >
               {item.label}
             </a>
           ))}

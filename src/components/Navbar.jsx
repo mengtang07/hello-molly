@@ -22,10 +22,23 @@ export default function Navbar({ dark, onToggleTheme }) {
   return (
     <header className={`navbar ${scrolled ? 'is-scrolled' : ''} ${open ? 'is-open' : ''}`}>
       <div className="container navbar__inner">
-        <a className="navbar__brand" href="#home" onClick={() => setOpen(false)}>
-          <MollyLogo dark={dark} width={132} />
-          <span className="navbar__brand-text">Molly</span>
-        </a>
+        <div className="navbar__brand">
+          <a className="navbar__brand-home" href="#home" onClick={() => setOpen(false)}>
+            <MollyLogo dark={dark} width={132} />
+            <span className="navbar__brand-text">Molly</span>
+          </a>
+          {site.brandLink && (
+            <a
+              className="navbar__brand-secret"
+              href={site.brandLink.href}
+              target="_blank"
+              rel="noreferrer"
+              aria-label={site.brandLink.label}
+            >
+              <span className="sr-only">{site.brandLink.label}</span>
+            </a>
+          )}
+        </div>
 
         <nav className="navbar__links" aria-label="主导航">
           {site.nav.map((item) => (

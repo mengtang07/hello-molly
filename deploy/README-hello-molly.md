@@ -83,3 +83,67 @@ ssh root@116.62.177.154 'cd /root && bash deploy-react.sh'
 | 样式丢失 | 同上，或 CSS 引用路径写错 |
 | 访问 404 | WordPress 重写拦截，改用独立 vhost |
 | 刷新子路由 404 | 需要 `.htaccess` 的 SPA 回退（脚本已自动写入） |
+
+---
+
+## 附:国家队 ETF 流向报表(`/etf/`)
+
+站内 `https://www.mymolly.online/etf/` 是一份**自动更新的自包含报表**,与主页是两套独立的发布流程。
+
+### 架构
+
+```
+/opt/etf/                 ← 服务端工作目录(不在 /var/www/html, 不会被站点发布冲掉)
+├── refresh.py            ← 抓数主脚本(已打 akshare 改名兼容补丁)
+├── make_offline.py       ← 把 ECharts CDN 外链内联成离线单文件
+├── branding.py           ← 注入 Molly 品牌 logo(部署后处理, 不改上游模板)
+├── publish.sh            ← 抓数 → 重算 → 离线化 → 注入 logo → 原子发布
+├── echarts.min.js        ← 内联用的 ECharts
+├── _etf_shares_cache.json ← 份额缓存(约 5 年基线, 不要删)
+├── _kline_cache.json     ← K 线缓存
+└── web/                  ← ← Apache Alias 指向这里
+    ├── index.html        ← 对外提供 /etf/
+    └── molly-logo.svg
+
+/etc/httpd/conf.d/ssl.conf  ← Alias /etf/ /opt/etf/web/
+```
+
+> ⚠️ **站点发布脚本会清空 `/var/www/html`**。报表目录放在 `/opt/etf/web/` 并用
+> Apache `Alias` 映射到 `/etf/`,所以 `deploy-now.sh` 不会影响报表。
+
+### 自动更新
+
+crontab(服务器时区 = 北京时间),用 `flock` 防重入:
+
+```
+30 8,12 * * *  /usr/bin/flock -n /opt/etf/refresh.lock /opt/etf/publish.sh
+0  19,21,23 * * *  /usr/bin/flock -n /opt/etf/refresh.lock /opt/etf/publish.sh
+```
+
+交易所晚间公布当日份额,所以晚上多跑几次;每次约 15 秒。
+
+### 常用操作
+
+```bash
+# 手动刷新一次
+ssh root@116.62.177.154 '/opt/etf/publish.sh'
+
+# 看日志
+ssh root@116.62.177.154 'tail -f /opt/etf/refresh.log'
+
+# 改发布路径 / 时间
+ssh root@116.62.177.154 'crontab -l'      # 编辑后 crontab -e 覆盖
+```
+
+### 注意
+
+- 服务器系统 Python 只有 3.6,跑不了新版 akshare;已用 yum 装 `python3.11`,虚拟环境在 `/opt/etf/.venv`
+- 装包必须走阿里云镜像(直连 PyPI 只有 ~13 KB/s,镜像 ~1.4 MB/s):
+  `pip install -i https://mirrors.aliyun.com/pypi/simple/ --trusted-host mirrors.aliyun.com ...`
+- 上游 `refresh.py` 调 `ak.tool_trade_date_hist_sina`,akshare 1.20.45 已改名,
+  本地补丁改用 `calendar_trade_date_hist_sina`(列名不变)
+
+### 首页入口
+
+导航栏 logo 右侧有一个**隐藏链接**(无可见文字,悬停/聚焦时浮现小圆点),
+指向 `/etf/`,配置在 `src/data/site.js` 的 `brandLink`。

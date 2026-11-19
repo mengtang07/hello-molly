@@ -96,14 +96,19 @@ ssh root@116.62.177.154 'cd /root && bash deploy-react.sh'
 /opt/etf/                 ← 服务端工作目录(不在 /var/www/html, 不会被站点发布冲掉)
 ├── refresh.py            ← 抓数主脚本(已打 akshare 改名兼容补丁)
 ├── make_offline.py       ← 把 ECharts CDN 外链内联成离线单文件
-├── branding.py           ← 注入 Molly 品牌 logo(部署后处理, 不改上游模板)
+├── branding.py           ← 注入 Molly 品牌(favicon / 标题前缀 / 页面 logo)
 ├── publish.sh            ← 抓数 → 重算 → 离线化 → 注入 logo → 原子发布
 ├── echarts.min.js        ← 内联用的 ECharts
 ├── _etf_shares_cache.json ← 份额缓存(约 5 年基线, 不要删)
 ├── _kline_cache.json     ← K 线缓存
 └── web/                  ← ← Apache Alias 指向这里
     ├── index.html        ← 对外提供 /etf/
-    └── molly-logo.svg
+    ├── molly-logo.svg    ← 页面内 logo
+    ├── favicon.svg       ← 浏览器标签页图标
+    ├── favicon-32.png
+    ├── favicon-16.png
+    ├── apple-touch-icon.png
+    └── icon-512.png
 
 /etc/httpd/conf.d/ssl.conf  ← Alias /etf/ /opt/etf/web/
 ```
@@ -142,6 +147,19 @@ ssh root@116.62.177.154 'crontab -l'      # 编辑后 crontab -e 覆盖
   `pip install -i https://mirrors.aliyun.com/pypi/simple/ --trusted-host mirrors.aliyun.com ...`
 - 上游 `refresh.py` 调 `ak.tool_trade_date_hist_sina`,akshare 1.20.45 已改名,
   本地补丁改用 `calendar_trade_date_hist_sina`(列名不变)
+
+### 品牌注入(`branding.py`)
+
+报表页原本**没有任何 favicon 声明**(标签页显示浏览器默认地球图标)，
+也没有站点品牌。`branding.py` 作为**部署后处理**补上三样东西, 不改上游模板:
+
+| 注入内容 | 效果 |
+|---|---|
+| `<link rel="icon">` ×4 + `apple-touch-icon` + `theme-color` | 浏览器标签页 / 手机主屏显示 Molly 图标 |
+| `<title>` 前缀 `Molly · ` | 标签页标题 `Molly · 国家队ETF每日净买入卖出报表` |
+| 页头 logo + "Molly" 链接 | 页面左上角品牌条, 点击回首页 |
+
+图标全部用**相对路径**放在 `web/` 下, `/etf/` 目录自包含, 不依赖站点发布目录。
 
 ### 首页入口
 

@@ -161,6 +161,32 @@ ssh root@116.62.177.154 'crontab -l'      # 编辑后 crontab -e 覆盖
 
 图标全部用**相对路径**放在 `web/` 下, `/etf/` 目录自包含, 不依赖站点发布目录。
 
+### 移动端适配(`mobile.css` + `mobile.js`)
+
+上游报表**完全没有响应式设计**(零 `@media`),手机上是纯粹的桌面版。
+`branding.py` 在生成 HTML 时注入两段资源来补齐:
+
+**`mobile.css`** —— 纯 CSS 断点
+
+| 断点 | 变化 |
+|---|---|
+| `max-width: 860px`(竖屏手机) | KPI 3 列 → **2 列**;收窄留白;柱状图高度 190→148px;日期标签改水平小字、每 3 个显示 1 个;K 线容器 520→360px;表格字号下调 |
+| `max-width: 400px` | 进一步收紧内边距与字号 |
+| `orientation: landscape` + `max-height: 540px`(横屏手机) | KPI 挤成 **一行 6 个**;纵向留白大幅压缩;柱状图 118px;K 线容器 280px |
+| `orientation: landscape` + `max-width: 780px` | 横屏但屏幕窄(如 iPhone SE)时 KPI 退回 3 列,避免数字挤爆 |
+
+**`mobile.js`** —— 调 ECharts 网格边距
+
+ECharts 的 grid 边距是写死的像素(`left:50 right:56`),窄屏会被吃掉 106px。
+`mobile.js` 用 `echarts.getInstanceByDom()` 拿到实例,在窄屏时把边距压到
+`left:30 right:32`、高度改百分比;并在 `resize` / `orientationchange` /
+切换指数 / 切换显示区间后重新套用(报表自身会重建 option,覆盖掉改写)。
+
+> ⚠️ **注入位置必须用 `rfind` 不能用 `replace(...,1)`**:
+> 内联的 `echarts.min.js` 源码里含有 `</head>` 和 `</body>` 字面量,
+> 首次命中的是**库源码内部**,会把 ECharts 劈成两半 → 库加载失败 →
+> 图表显示"图表库未加载(需联网)"。`branding.py` 已加自检。
+
 ### 首页入口
 
 导航栏 logo 右侧有一个**隐藏链接**(无可见文字,悬停/聚焦时浮现小圆点),

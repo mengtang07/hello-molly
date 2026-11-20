@@ -1,0 +1,59 @@
+/* ===== 移动端适配 (由 branding.py 注入) ===== */
+
+/* --- 竖屏手机: 收窄留白, KPI 两列, 图表压缩 --- */
+@media (max-width: 860px) {
+  .wrap { padding: 14px 10px 46px; }
+  h1 { font-size: 19px; }
+  .top { margin-bottom: 14px; }
+  .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-bottom: 16px; }
+  .kpi { padding: 11px 12px; border-radius: 10px; }
+  .kpi .lb { font-size: 11px; }
+  .kpi .vl { font-size: 19px; }
+  .kpi .tg { font-size: 11px; }
+  .card { padding: 13px 12px; border-radius: 10px; margin-bottom: 16px; }
+  .card h2 { font-size: 14px; margin-bottom: 10px; }
+  .sub { font-size: 11px; gap: 8px; }
+  table { font-size: 12px; }
+  th, td { padding: 6px 6px; }
+  table.matrix td, table.matrix th { font-size: 9.5px; }
+  .mult { font-size: 9px; }
+  /* 柱状图: 21 根柱挤在窄屏里, 缩小间距并只保留每 3 个日期标签 */
+  .bars { height: 148px; gap: 2px; }
+  /* 窄屏改水平小字: 斜排会压到柱子上, 水平每 3 个显示一个刚好不打架 */
+  .dt { font-size: 8px; transform: none; transform-origin: center; white-space: nowrap; }
+  .col:nth-child(3n + 2) .dt, .col:nth-child(3n) .dt { display: none; }
+  #klnBox { height: 360px !important; }
+  .klnctl { gap: 6px; margin-bottom: 8px; }
+  .molly-brand { margin-bottom: 10px; }
+  .molly-brand img { height: 20px; }
+}
+
+/* --- 窄屏(<=400px)进一步收紧 --- */
+@media (max-width: 400px) {
+  .wrap { padding: 12px 8px 40px; }
+  .kpi { padding: 10px; }
+  .kpi .vl { font-size: 17px; }
+  .card { padding: 11px 10px; }
+}
+
+/* --- 横屏手机: 高度受限, 6 个 KPI 挤一行, 纵向留白大幅压缩 --- */
+@media (orientation: landscape) and (max-height: 540px) {
+  .wrap { padding: 10px 14px 28px; }
+  h1 { font-size: 18px; }
+  .top { margin-bottom: 10px; }
+  .kpis { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; margin-bottom: 12px; }
+  .kpi { padding: 8px 9px; }
+  .kpi .vl { font-size: 15px; }
+  .kpi .lb, .kpi .tg { font-size: 10px; }
+  .card { padding: 11px 12px; margin-bottom: 12px; border-radius: 10px; }
+  .card h2 { font-size: 13px; margin-bottom: 8px; }
+  .bars { height: 118px; }
+  #klnBox { height: 280px !important; }
+  .molly-brand { margin-bottom: 8px; }
+  .molly-brand img { height: 18px; }
+}
+
+/* --- 横屏但屏幕很窄(如 SE 667px): KPI 回到 3 列, 否则数字会挤爆 --- */
+@media (orientation: landscape) and (max-height: 540px) and (max-width: 780px) {
+  .kpis { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}

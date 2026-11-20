@@ -60,12 +60,10 @@ def main(src, dst):
     else:
         s = s[:i] + inject + "\n" + s[i:]
 
-    # 2) 修正"刷新数据"按钮的误导性文案
-    #    该按钮只是 location.reload(), 并不会去交易所抓新数据;
-    #    数据靠服务端定时任务刷新, 文案不说清楚会让人以为按钮坏了。
-    s = s.replace(
-        'title="点击重新加载，并按沪深两市同步日期展示最新数据"',
-        'title="数据由服务器每日自动更新;此按钮仅重新加载当前页面"')
+    # 2) 去掉"刷新数据"按钮的 tooltip
+    #    该按钮只是 location.reload(), 并不去交易所抓新数据;
+    #    数据靠服务端定时任务刷新, tooltip 说了也没意义, 直接删掉。
+    s = re.sub(r'(<button onclick="location\.reload\(\)"\s*)title="[^"]*"', r'\1', s)
 
     # 3) 标题加品牌前缀
     def _title(m):

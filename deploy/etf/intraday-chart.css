@@ -1,0 +1,34 @@
+/* ===== 盘中资金流卡片 (由 branding.py 注入) ===== */
+.it-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.it-head h2 { margin-bottom: 14px; }
+.it-state {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 11px; padding: 2px 9px; border-radius: 999px;
+  border: 1px solid var(--line, #e6e8ee); color: var(--mut, #7a8194);
+  background: var(--card, #fff); white-space: nowrap;
+}
+.it-state.is-live { color: #d43d2a; border-color: #f3c3bd; background: #fdecea; }
+.it-state.is-live::before {
+  content: ''; width: 6px; height: 6px; border-radius: 50%;
+  background: #d43d2a; animation: it-pulse 1.4s ease-in-out infinite;
+}
+@keyframes it-pulse { 0%,100% { opacity: 1; } 50% { opacity: .25; } }
+.it-time { font-size: 11px; color: var(--mut, #7a8194); font-variant-numeric: tabular-nums; }
+.it-stats { display: flex; gap: 22px; flex-wrap: wrap; margin-bottom: 12px; }
+.it-stat { font-size: 11px; color: var(--mut, #7a8194); }
+.it-stat b {
+  display: block; font-size: 19px; font-weight: 700; margin-top: 2px;
+  font-variant-numeric: tabular-nums; color: var(--ink, #1a1d24);
+}
+.it-stat b.pos { color: #d43d2a; }
+.it-stat b.neg { color: #1f9d7b; }
+.it-note {
+  margin-top: 12px; font-size: 11px; line-height: 1.6; color: var(--mut, #7a8194);
+  border-left: 2px solid var(--line, #e6e8ee); padding-left: 10px;
+}
+.it-note b { color: var(--ink, #1a1d24); }
+.it-empty { padding: 40px 0; text-align: center; color: var(--mut, #7a8194); font-size: 13px; }
+@media (max-width: 860px) {
+  .it-stats { gap: 14px; }
+  .it-stat b { font-size: 16px; }
+}
